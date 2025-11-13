@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.SuperstructureGoals;
 
 import java.util.List;
 
@@ -22,12 +20,10 @@ public final class AutoRoutine {
 
   private final List<AutoAction> actions;
   private final Drive drive;
-  private final Superstructure superstructure;
 
-  public AutoRoutine(List<AutoAction> actions, Drive drive, Superstructure superstructure) {
+  public AutoRoutine(List<AutoAction> actions, Drive drive) {
     this.actions = actions;
     this.drive = drive;
-    this.superstructure = superstructure;
   }
 
   public Command build() {
@@ -38,7 +34,6 @@ public final class AutoRoutine {
     sequence.addCommands(
         Commands.sequence(
             AutoBuilder.resetOdom(startPath.getStartingHolonomicPose().orElseGet(Pose2d::new)),
-            superstructure.getSendToStateCommand(() -> SuperstructureGoals.STOW),
             AutoBuilder.followPath(startPath).andThen(Commands.runOnce(drive::stopWithX, drive))));
 
     for (int index = 0; index < actions.size(); index++) {
@@ -50,23 +45,16 @@ public final class AutoRoutine {
               AutoBuilder.followPath(getPathToBranch(action.branch(), action.top()))
                   .andThen(Commands.runOnce(drive::stopWithX, drive))
                   .onlyIf(() -> currentIndex != 0),
-              switch (action.level()) {
-                case L1 -> superstructure.getForceStateCommand(() -> SuperstructureGoals.L1);
-                case L2 -> superstructure.getForceStateCommand(() -> SuperstructureGoals.STOW);
-                case L3 -> superstructure.getForceStateCommand(() -> SuperstructureGoals.STOW);
-                case L4 -> superstructure.getForceStateCommand(() -> SuperstructureGoals.STOW);
-                default -> Commands.none();
-              }),
+              Commands.none()),
           Commands.runOnce(drive::stopWithX, drive),
-          Commands.waitSeconds(0.75),
-          superstructure.getScoreCommand(() -> true));
+          Commands.waitSeconds(0.75));
 
       if (index != actions.size() - 1) {
         sequence.addCommands(
             Commands.parallel(
                 AutoBuilder.followPath(getPathToSource(action.branch()))
                     .andThen(Commands.runOnce(drive::stopWithX, drive)),
-                superstructure.getSendToStateCommand(() -> SuperstructureGoals.STOW)),
+                Commands.none()),
             Commands.runOnce(drive::stopWithX, drive),
             Commands.waitSeconds(2.0));
       }

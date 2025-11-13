@@ -13,10 +13,8 @@ import edu.wpi.first.wpilibj.util.WPILibVersion;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.swerve.AlignmentCommand;
 import frc.robot.subsystems.drive.AlignmentState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -25,9 +23,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOHybridFXS;
-import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.SuperstructureGoals;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.generated.TunerConstants;
 import lib.controllers.CommandButtonBoard;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -42,8 +37,6 @@ public final class Robot extends LoggedRobot {
 
   private static Drive drive;
   private static AlignmentState alignmentState;
-  private static Vision vision;
-  private static Superstructure superstructure;
 
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandButtonBoard operatorController = new CommandButtonBoard(1, 2);
@@ -123,13 +116,8 @@ public final class Robot extends LoggedRobot {
     }
 
     alignmentState = new AlignmentState();
-    vision = new Vision(drive::addVisionMeasurement);
-    superstructure = new Superstructure(drive, alignmentState);
 
-    // immediately set the arm to the stow position
-    superstructure.getArm().setTargetAngle(SuperstructureGoals.STOW.getArmAngle());
-
-    autos = new Autos(drive, superstructure, alignmentState);
+    // autos = new Autos(drive, alignmentState);
 
     configureBindings();
   }
@@ -139,50 +127,12 @@ public final class Robot extends LoggedRobot {
         DriveCommands.joystickDrive(
             drive, driverController::getLeftY, driverController::getLeftX, () -> -driverController.getRightX()));
 
+    // left bumper will be used to toggle slow mode
+    driverController.leftBumper().onTrue(drive.toggleSlowMode());
+
     driverController
         .leftStick()
         .onTrue(DriveCommands.toggleFieldOriented(drive));
-
-    driverController
-        .leftTrigger()
-        .onTrue(
-            Commands.sequence(
-                superstructure.getForceStateCommand(() -> SuperstructureGoals.ALGAE_L2),
-                superstructure.getDealgaefyL2Command(driverController.leftTrigger()::getAsBoolean)));
-
-    driverController
-        .rightTrigger()
-        .onTrue(
-            Commands.sequence(
-                superstructure.getForceStateCommand(() -> SuperstructureGoals.ALGAE_L3),
-                superstructure.getDealgaefyL3Command(driverController.rightTrigger()::getAsBoolean)));
-
-    driverController
-        .povRight()
-        .onTrue(superstructure.getProcessorCommand(driverController.povRight()::getAsBoolean));
-
-    driverController
-        .povLeft()
-        .onTrue(superstructure.getIntakeAlgaeCommand(driverController.povLeft()::getAsBoolean));
-
-    driverController
-        .a()
-        .onTrue(superstructure.getSendToStateCommand(() -> SuperstructureGoals.STOW));
-
-    driverController
-        .x()
-        .onTrue(
-            Commands.sequence(
-                superstructure.getForceStateCommand(() -> SuperstructureGoals.L1),
-                superstructure.getScoreCommand(driverController.x()::getAsBoolean)));
-
-    driverController
-        .y()
-        .onTrue(AlignmentCommand.tagRelativeAlign(drive, alignmentState, vision, 0.45, 0.0));
-
-    driverController
-        .b()
-        .onTrue(superstructure.getIntakeCommand(driverController.b()::getAsBoolean));
 
     driverController
         .povDown()
@@ -193,11 +143,6 @@ public final class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
-    double armAngle = superstructure.getArm().getAngle().getRadians();
-    Logger.recordOutput(
-        "FinalComponentPoses",
-        new Pose3d(0.28, 0.0, 0.275, new Rotation3d(0.0, armAngle - 1.0, 0.0)));
-
     CommandScheduler.getInstance().run();
   }
 
@@ -231,13 +176,5 @@ public final class Robot extends LoggedRobot {
 
   public static AlignmentState getAlignmentState() {
     return alignmentState;
-  }
-
-  public static Vision getVision() {
-    return vision;
-  }
-
-  public static Superstructure getSuperstructure() {
-    return superstructure;
   }
 }
