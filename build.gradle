@@ -134,7 +134,7 @@ task(replayWatch, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 }
 
-project.compileJava.dependsOn(createVersionFile)
+// project.compileJava.dependsOn(createVersionFile)
 gversion {
     srcDir       = "src/main/java/"
     classPackage = "frc.robot"
