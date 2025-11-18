@@ -40,4 +40,9 @@ public class FunnelIOReal implements FunnelIO {
     public void setVoltage(double volts) {
         motor.setVoltage(volts);
     }
+
+    @Override
+    public void stop() {
+        motor.stopMotor();
+    }
 }

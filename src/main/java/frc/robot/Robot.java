@@ -26,6 +26,8 @@ import frc.robot.subsystems.drive.ModuleIOHybridFXS;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelIO;
 import frc.robot.subsystems.funnel.FunnelIOReal;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.generated.TunerConstants;
 import lib.controllers.CommandButtonBoard;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -40,6 +42,7 @@ public final class Robot extends LoggedRobot {
 
   private static Drive drive;
   private static Funnel funnel;
+  private static Shooter shooter;
   private static AlignmentState alignmentState;
 
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -140,6 +143,12 @@ public final class Robot extends LoggedRobot {
 
     // left bumper will be used to toggle slow mode
     driverController.leftBumper().onTrue(drive.toggleSlowMode());
+
+    driverController.a().onTrue(shooter.shootHigh());
+
+    driverController.b().onTrue(shooter.shootLow());
+    
+    driverController.x().onTrue(funnel.runFunnel());
 
     driverController
         .leftStick()
