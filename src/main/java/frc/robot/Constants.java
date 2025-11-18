@@ -39,6 +39,16 @@ public final class Constants {
     }
   }
 
+  public static final class FunnelConstants {
+    public static final int MOTOR_ID = 15;
+    public static final boolean INVERTED = false;
+    public static final Voltage FUNNEL_SPEED = Units.Volts.of(6.0);
+    public static final Current CURRENT_LIMIT = Units.Amps.of(40.0);
+    
+    private FunnelConstants() {
+    }
+  }
+
   public static final class ManipulatorConstants {
     public static final int LEFT_ROLLER_MOTOR_ID = 50;
     public static final int RIGHT_ROLLER_MOTOR_ID = 51;

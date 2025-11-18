@@ -23,6 +23,9 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOHybridFXS;
+import frc.robot.subsystems.funnel.Funnel;
+import frc.robot.subsystems.funnel.FunnelIO;
+import frc.robot.subsystems.funnel.FunnelIOReal;
 import frc.robot.generated.TunerConstants;
 import lib.controllers.CommandButtonBoard;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -36,6 +39,7 @@ public final class Robot extends LoggedRobot {
   public static final double UPDATE_RATE_SECONDS = 0.02;
 
   private static Drive drive;
+  private static Funnel funnel;
   private static AlignmentState alignmentState;
 
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -113,6 +117,13 @@ public final class Robot extends LoggedRobot {
             },
             new ModuleIO() {
             });
+    }
+
+    // Initialize funnel subsystem
+    switch (RobotType.MODE) {
+      case REAL -> funnel = new Funnel(new FunnelIOReal());
+      default -> funnel = new Funnel(new FunnelIO() {
+      });
     }
 
     alignmentState = new AlignmentState();
