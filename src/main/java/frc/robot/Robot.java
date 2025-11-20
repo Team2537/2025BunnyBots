@@ -26,8 +26,11 @@ import frc.robot.subsystems.drive.ModuleIOHybridFXS;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelIO;
 import frc.robot.subsystems.funnel.FunnelIOReal;
+import frc.robot.subsystems.funnel.FunnelIOSim;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.generated.TunerConstants;
 import lib.controllers.CommandButtonBoard;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -125,7 +128,15 @@ public final class Robot extends LoggedRobot {
     // Initialize funnel subsystem
     switch (RobotType.MODE) {
       case REAL -> funnel = new Funnel(new FunnelIOReal());
+      case SIMULATION -> funnel = new Funnel(new FunnelIOSim());
       default -> funnel = new Funnel(new FunnelIO() {
+      });
+    }
+
+    switch (RobotType.MODE) {
+      case REAL -> shooter = new Shooter(new ShooterIOReal());
+      case SIMULATION -> shooter = new Shooter(new ShooterIOSim());
+      default -> shooter = new Shooter(new ShooterIO() {
       });
     }
 
@@ -137,18 +148,25 @@ public final class Robot extends LoggedRobot {
   }
 
   private void configureBindings() {
-    drive.setDefaultCommand(
+
+    if (RobotType.MODE == RobotType.MODE.REAL) {
+      drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive, driverController::getLeftY, driverController::getLeftX, () -> -driverController.getRightX()));
+    } else {
+      drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive, () -> -driverController.getLeftY(), () -> -driverController.getLeftX(), () -> -driverController.getRightX()));
+    }
 
     // left bumper will be used to toggle slow mode
     driverController.leftBumper().onTrue(drive.toggleSlowMode());
 
-    driverController.a().onTrue(shooter.shootHigh());
+    driverController.a().whileTrue(shooter.shootHigh());
 
-    driverController.b().onTrue(shooter.shootLow());
-    
-    driverController.x().onTrue(funnel.runFunnel());
+    driverController.b().whileTrue(shooter.shootLow());
+
+    driverController.x().whileTrue(funnel.runFunnel());
 
     driverController
         .leftStick()
