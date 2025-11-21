@@ -54,11 +54,11 @@ public class Shooter extends SubsystemBase {
         // Check both motors or average?
         // We'll check if both are within tolerance.
         // Convert Rad/s to RPM
-        double leftRpm = inputs.shooterLeftVelocityRadPerSec * 60.0 / (2.0 * Math.PI);
-        double rightRpm = inputs.shooterRightVelocityRadPerSec * 60.0 / (2.0 * Math.PI);
+        double topRpm = inputs.shooterTopVelocityRadPerSec * 60.0 / (2.0 * Math.PI);
+        double bottomRpm = inputs.shooterBottomVelocityRadPerSec * 60.0 / (2.0 * Math.PI);
 
-        return MathUtil.isNear(targetRpm, leftRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM) &&
-                MathUtil.isNear(targetRpm, rightRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM);
+        return MathUtil.isNear(targetRpm, topRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM) &&
+                MathUtil.isNear(targetRpm, bottomRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM);
     }
 
     /**

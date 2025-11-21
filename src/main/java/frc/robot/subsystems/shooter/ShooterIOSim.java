@@ -21,11 +21,11 @@ public class ShooterIOSim implements ShooterIO {
             LinearSystemId.createDCMotorSystem(
                     DCMotor.getNEO(1), LOADER_MOI_KG_M2, GEAR_RATIO),
             DCMotor.getNEO(1));
-    private final DCMotorSim shooterLeftSim = new DCMotorSim(
+    private final DCMotorSim shooterTopSim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
                     DCMotor.getKrakenX60Foc(1), SHOOTER_MOI_KG_M2, GEAR_RATIO),
             DCMotor.getKrakenX60Foc(1));
-    private final DCMotorSim shooterRightSim = new DCMotorSim(
+    private final DCMotorSim shooterBottomSim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
                     DCMotor.getKrakenX60Foc(1), SHOOTER_MOI_KG_M2, GEAR_RATIO),
             DCMotor.getKrakenX60Foc(1));
@@ -44,8 +44,8 @@ public class ShooterIOSim implements ShooterIO {
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         if (shooterClosedLoop) {
-            double averageVelocityRadPerSec = (shooterLeftSim.getAngularVelocityRadPerSec()
-                    + shooterRightSim.getAngularVelocityRadPerSec()) / 2.0;
+            double averageVelocityRadPerSec = (shooterTopSim.getAngularVelocityRadPerSec()
+                    + shooterBottomSim.getAngularVelocityRadPerSec()) / 2.0;
             double ffVolts = shooterFeedforward.calculate(shooterVelocitySetpointRadPerSec);
             double fbVolts = shooterVelocityController.calculate(
                     averageVelocityRadPerSec,
@@ -56,12 +56,12 @@ public class ShooterIOSim implements ShooterIO {
         }
 
         loadingSim.setInputVoltage(MathUtil.clamp(loadingAppliedVolts, -12.0, 12.0));
-        shooterLeftSim.setInputVoltage(shooterAppliedVolts);
-        shooterRightSim.setInputVoltage(shooterAppliedVolts);
+        shooterTopSim.setInputVoltage(shooterAppliedVolts);
+        shooterBottomSim.setInputVoltage(shooterAppliedVolts);
 
         loadingSim.update(LOOP_PERIOD_SEC);
-        shooterLeftSim.update(LOOP_PERIOD_SEC);
-        shooterRightSim.update(LOOP_PERIOD_SEC);
+        shooterTopSim.update(LOOP_PERIOD_SEC);
+        shooterBottomSim.update(LOOP_PERIOD_SEC);
 
         inputs.loadingPositionRad = loadingSim.getAngularPositionRad();
         inputs.loadingVelocityRadPerSec = loadingSim.getAngularVelocityRadPerSec();
@@ -69,17 +69,17 @@ public class ShooterIOSim implements ShooterIO {
         inputs.loadingSupplyCurrentAmps = Math.abs(loadingSim.getCurrentDrawAmps());
         inputs.loadingTempCelcius = 25.0;
 
-        inputs.shooterLeftPositionRad = shooterLeftSim.getAngularPositionRad();
-        inputs.shooterLeftVelocityRadPerSec = shooterLeftSim.getAngularVelocityRadPerSec();
-        inputs.shooterLeftAppliedVolts = shooterAppliedVolts;
-        inputs.shooterLeftSupplyCurrentAmps = Math.abs(shooterLeftSim.getCurrentDrawAmps());
-        inputs.shooterLeftTempCelcius = 30.0;
+        inputs.shooterTopPositionRad = shooterTopSim.getAngularPositionRad();
+        inputs.shooterTopVelocityRadPerSec = shooterTopSim.getAngularVelocityRadPerSec();
+        inputs.shooterTopAppliedVolts = shooterAppliedVolts;
+        inputs.shooterTopSupplyCurrentAmps = Math.abs(shooterTopSim.getCurrentDrawAmps());
+        inputs.shooterTopTempCelcius = 30.0;
 
-        inputs.shooterRightPositionRad = shooterRightSim.getAngularPositionRad();
-        inputs.shooterRightVelocityRadPerSec = shooterRightSim.getAngularVelocityRadPerSec();
-        inputs.shooterRightAppliedVolts = shooterAppliedVolts;
-        inputs.shooterRightSupplyCurrentAmps = Math.abs(shooterRightSim.getCurrentDrawAmps());
-        inputs.shooterRightTempCelcius = 30.0;
+        inputs.shooterBottomPositionRad = shooterBottomSim.getAngularPositionRad();
+        inputs.shooterBottomVelocityRadPerSec = shooterBottomSim.getAngularVelocityRadPerSec();
+        inputs.shooterBottomAppliedVolts = shooterAppliedVolts;
+        inputs.shooterBottomSupplyCurrentAmps = Math.abs(shooterBottomSim.getCurrentDrawAmps());
+        inputs.shooterBottomTempCelcius = 30.0;
     }
 
     @Override

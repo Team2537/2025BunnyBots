@@ -142,22 +142,16 @@ public final class Robot extends LoggedRobot {
 
     alignmentState = new AlignmentState();
 
-    // autos = new Autos(drive, alignmentState);
+    autos = new Autos(drive, alignmentState, shooter, funnel);
 
     configureBindings();
   }
 
   private void configureBindings() {
 
-    if (RobotType.MODE == RobotType.MODE.REAL) {
-      drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive, driverController::getLeftY, driverController::getLeftX, () -> -driverController.getRightX()));
-    } else {
-      drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive, () -> -driverController.getLeftY(), () -> -driverController.getLeftX(), () -> -driverController.getRightX()));
-    }
+    drive.setDefaultCommand(
+      DriveCommands.joystickDrive(
+          drive, driverController::getLeftY, driverController::getLeftX, () -> -driverController.getRightX()));
 
     // left bumper will be used to toggle slow mode
     driverController.leftBumper().onTrue(drive.toggleSlowMode());
