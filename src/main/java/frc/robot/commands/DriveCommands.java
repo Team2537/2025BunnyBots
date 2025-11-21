@@ -87,6 +87,8 @@ public class DriveCommands {
 
                     boolean isFlipped = DriverStation.getAlliance().isPresent()
                             && DriverStation.getAlliance().get() == Alliance.Red;
+                    
+                //     isFlipped = !isFlipped; // reverse because we start the robot facing the alliance's side for auto
 
                     Rotation2d heading = isFlipped
                             ? drive.getRotation().plus(new Rotation2d(Math.PI))

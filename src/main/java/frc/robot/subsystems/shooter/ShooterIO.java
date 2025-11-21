@@ -12,19 +12,19 @@ public interface ShooterIO {
         public double loadingSupplyCurrentAmps = 0.0;
         public double loadingTempCelcius = 0.0;
 
-        // Shooter Motor Left (Vortex)
-        public double shooterLeftPositionRad = 0.0;
-        public double shooterLeftVelocityRadPerSec = 0.0;
-        public double shooterLeftAppliedVolts = 0.0;
-        public double shooterLeftSupplyCurrentAmps = 0.0;
-        public double shooterLeftTempCelcius = 0.0;
+        // Shooter Motor Top (Vortex)
+        public double shooterTopPositionRad = 0.0;
+        public double shooterTopVelocityRadPerSec = 0.0;
+        public double shooterTopAppliedVolts = 0.0;
+        public double shooterTopSupplyCurrentAmps = 0.0;
+        public double shooterTopTempCelcius = 0.0;
 
-        // Shooter Motor Right (Vortex)
-        public double shooterRightPositionRad = 0.0;
-        public double shooterRightVelocityRadPerSec = 0.0;
-        public double shooterRightAppliedVolts = 0.0;
-        public double shooterRightSupplyCurrentAmps = 0.0;
-        public double shooterRightTempCelcius = 0.0;
+        // Shooter Motor Bottom (Vortex)
+        public double shooterBottomPositionRad = 0.0;
+        public double shooterBottomVelocityRadPerSec = 0.0;
+        public double shooterBottomAppliedVolts = 0.0;
+        public double shooterBottomSupplyCurrentAmps = 0.0;
+        public double shooterBottomTempCelcius = 0.0;
     }
 
     /** Updates the set of loggable inputs. */

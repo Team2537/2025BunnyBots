@@ -7,102 +7,108 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.funnel.Funnel;
 
 import java.util.List;
 
 /** Describes an autonomous routine built from branch actions. */
 public final class AutoRoutine {
-  public record AutoAction(
-      lib.math.geometry.FieldConstants.Reef.Branch branch,
-      lib.math.geometry.FieldConstants.Reef.Level level,
-      boolean top) {
+  public enum AutoAction {
+    DRIVE_TO_COSMIC_CONVERTER,
+    DRIVE_TO_OUT,
+    SCORE_LOW,
+    SCORE_HIGH,
   }
-
   private final List<AutoAction> actions;
   private final Drive drive;
+  private final Shooter shooter;
+  private final Funnel funnel;
 
-  public AutoRoutine(List<AutoAction> actions, Drive drive) {
+  public AutoRoutine(List<AutoAction> actions, Drive drive, Shooter shooter, Funnel funnel) {
     this.actions = actions;
     this.drive = drive;
+    this.shooter = shooter;
+    this.funnel = funnel;
   }
 
   public Command build() {
     SequentialCommandGroup sequence = new SequentialCommandGroup();
 
-    PathPlannerPath startPath = getPathFromStart(actions.get(0).branch());
 
-    sequence.addCommands(
-        Commands.sequence(
-            AutoBuilder.resetOdom(startPath.getStartingHolonomicPose().orElseGet(Pose2d::new)),
-            AutoBuilder.followPath(startPath).andThen(Commands.runOnce(drive::stopWithX, drive))));
+    AutoAction previousAction = null;
 
-    for (int index = 0; index < actions.size(); index++) {
-      AutoAction action = actions.get(index);
-      final int currentIndex = index;
-
-      sequence.addCommands(
-          Commands.parallel(
-              AutoBuilder.followPath(getPathToBranch(action.branch(), action.top()))
-                  .andThen(Commands.runOnce(drive::stopWithX, drive))
-                  .onlyIf(() -> currentIndex != 0),
-              Commands.none()),
-          Commands.runOnce(drive::stopWithX, drive),
-          Commands.waitSeconds(0.75));
-
-      if (index != actions.size() - 1) {
-        sequence.addCommands(
-            Commands.parallel(
-                AutoBuilder.followPath(getPathToSource(action.branch()))
-                    .andThen(Commands.runOnce(drive::stopWithX, drive)),
-                Commands.none()),
-            Commands.runOnce(drive::stopWithX, drive),
-            Commands.waitSeconds(2.0));
+    for (AutoAction action : actions) {
+      switch (action) {
+        case DRIVE_TO_COSMIC_CONVERTER:
+          previousAction = action;
+          sequence.addCommands(
+            Commands.sequence(
+              AutoBuilder.resetOdom(getPathFromStartToCosmicConverter().getStartingHolonomicPose().orElseGet(Pose2d::new)),
+              AutoBuilder.followPath(getPathFromStartToCosmicConverter()).andThen(Commands.runOnce(drive::stopWithX, drive))
+            )
+          );
+          break;
+        case DRIVE_TO_OUT:
+          if (previousAction == AutoAction.DRIVE_TO_COSMIC_CONVERTER) {
+            previousAction = null;
+            sequence.addCommands(
+              Commands.sequence(
+                AutoBuilder.followPath(getPathFromCosmicConverterToOut()).andThen(Commands.runOnce(drive::stopWithX, drive))
+              )
+            );
+          } else {
+            sequence.addCommands(
+              Commands.sequence(
+                AutoBuilder.resetOdom(getPathFromStartToOut().getStartingHolonomicPose().orElseGet(Pose2d::new)),
+                AutoBuilder.followPath(getPathFromStartToOut()).andThen(Commands.runOnce(drive::stopWithX, drive))
+              )
+            );
+          }
+          break;
+        case SCORE_LOW:
+          sequence.addCommands(
+            Commands.deadline(
+              Commands.waitSeconds(5),
+              funnel.runFunnel(),
+              shooter.shootLow()
+            )
+          );
+          break;
+        case SCORE_HIGH:
+          sequence.addCommands(
+            Commands.deadline(
+              Commands.waitSeconds(5),
+              funnel.runFunnel(),
+              shooter.shootHigh()
+            )
+          );
+          break;
       }
     }
 
     return sequence;
   }
 
-  private PathPlannerPath getPathToBranch(
-      lib.math.geometry.FieldConstants.Reef.Branch branch, boolean top) {
+  private PathPlannerPath getPathFromStartToCosmicConverter() {
     try {
-      if (top) {
-        return PathPlannerPath.fromPathFile("ts_to_" + branch.name());
-      }
-      return PathPlannerPath.fromPathFile("bs_to_" + branch.name());
+      return PathPlannerPath.fromPathFile("start_to_cosmic_converter");
     } catch (Exception e) {
       throw new RuntimeException("Failed to load path file", e);
     }
   }
 
-  private PathPlannerPath getPathToSource(lib.math.geometry.FieldConstants.Reef.Branch startBranch) {
+  private PathPlannerPath getPathFromCosmicConverterToOut() {
     try {
-      boolean topSource = List.of(
-          lib.math.geometry.FieldConstants.Reef.Branch.A,
-          lib.math.geometry.FieldConstants.Reef.Branch.L,
-          lib.math.geometry.FieldConstants.Reef.Branch.K,
-          lib.math.geometry.FieldConstants.Reef.Branch.J,
-          lib.math.geometry.FieldConstants.Reef.Branch.I,
-          lib.math.geometry.FieldConstants.Reef.Branch.H)
-          .contains(startBranch);
-
-      return PathPlannerPath.fromPathFile(
-          startBranch.name() + "_to_" + (topSource ? "ts" : "bs"));
+      return PathPlannerPath.fromPathFile("cosmic_converter_to_out");
     } catch (Exception e) {
       throw new RuntimeException("Failed to load path file", e);
     }
   }
 
-  private PathPlannerPath getPathFromStart(lib.math.geometry.FieldConstants.Reef.Branch branch) {
+  private PathPlannerPath getPathFromStartToOut() {
     try {
-      List<lib.math.geometry.FieldConstants.Reef.Branch> topBranches = List.of(
-          lib.math.geometry.FieldConstants.Reef.Branch.J,
-          lib.math.geometry.FieldConstants.Reef.Branch.I);
-
-      if (topBranches.contains(branch)) {
-        return PathPlannerPath.fromPathFile("tstart_to_" + branch.name());
-      }
-      return PathPlannerPath.fromPathFile("bstart_to_" + branch.name());
+      return PathPlannerPath.fromPathFile("start_to_out");
     } catch (Exception e) {
       throw new RuntimeException("Failed to load path file", e);
     }
