@@ -53,8 +53,8 @@ public class Shooter extends SubsystemBase {
     public boolean atSpeed(double targetRpm) {
         // Check both motors or average?
         // We'll check if both are within tolerance.
-        double leftRpm = inputs.shooterLeftVelocityRpm;
-        double rightRpm = inputs.shooterRightVelocityRpm;
+        double topRpm = inputs.shooterTopVelocityRpm;
+        double bottomRpm = inputs.shooterBottomVelocityRpm;
 
         return MathUtil.isNear(targetRpm, topRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM) &&
                 MathUtil.isNear(targetRpm, bottomRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM);

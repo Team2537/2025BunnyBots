@@ -21,12 +21,12 @@ public final class Constants {
 
   public static final class ShooterConstants {
     public static final int LOADING_MOTOR_ID = 31;
-    public static final int SHOOTER_MOTOR_LEFT_ID = 22;
-    public static final int SHOOTER_MOTOR_RIGHT_ID = 23;
+    public static final int SHOOTER_MOTOR_TOP_ID = 22;
+    public static final int SHOOTER_MOTOR_BOTTOM_ID = 23;
 
     public static final boolean LOADING_INVERTED = true;
-    public static final boolean SHOOTER_LEFT_INVERTED = false;
-    public static final boolean SHOOTER_RIGHT_INVERTED = false; // Usually one is inverted
+    public static final boolean SHOOTER_TOP_INVERTED = false;
+    public static final boolean SHOOTER_BOTTOM_INVERTED = false; // Usually one is inverted
 
     public static final Current LOADING_CURRENT_LIMIT = Units.Amps.of(30.0);
     public static final Current SHOOTER_CURRENT_LIMIT = Units.Amps.of(60.0); // Vortex can handle more

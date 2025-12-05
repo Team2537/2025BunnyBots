@@ -73,19 +73,19 @@ public class ShooterIOReal implements ShooterIO {
         inputs.loadingSupplyCurrentAmps = loadingMotor.getOutputCurrent();
         inputs.loadingTempCelcius = loadingMotor.getMotorTemperature();
 
-        // Shooter Left
-        inputs.shooterLeftPositionRad = Units.Rotations.of(shooterLeftEncoder.getPosition()).in(Units.Radians);
-        inputs.shooterLeftVelocityRpm = shooterLeftEncoder.getVelocity();
-        inputs.shooterLeftAppliedVolts = shooterLeftMotor.getAppliedOutput() * shooterLeftMotor.getBusVoltage();
-        inputs.shooterLeftSupplyCurrentAmps = shooterLeftMotor.getOutputCurrent();
-        inputs.shooterLeftTempCelcius = shooterLeftMotor.getMotorTemperature();
+        // Shooter Top
+        inputs.shooterTopPositionRad = Units.Rotations.of(shooterTopEncoder.getPosition()).in(Units.Radians);
+        inputs.shooterTopVelocityRpm = shooterTopEncoder.getVelocity();
+        inputs.shooterTopAppliedVolts = shooterTopMotor.getAppliedOutput() * shooterTopMotor.getBusVoltage();
+        inputs.shooterTopSupplyCurrentAmps = shooterTopMotor.getOutputCurrent();
+        inputs.shooterTopTempCelcius = shooterTopMotor.getMotorTemperature();
 
-        // Shooter Right
-        inputs.shooterRightPositionRad = Units.Rotations.of(shooterRightEncoder.getPosition()).in(Units.Radians);
-        inputs.shooterRightVelocityRpm = shooterRightEncoder.getVelocity();
-        inputs.shooterRightAppliedVolts = shooterRightMotor.getAppliedOutput() * shooterRightMotor.getBusVoltage();
-        inputs.shooterRightSupplyCurrentAmps = shooterRightMotor.getOutputCurrent();
-        inputs.shooterRightTempCelcius = shooterRightMotor.getMotorTemperature();
+        // Shooter Bottom
+        inputs.shooterBottomPositionRad = Units.Rotations.of(shooterBottomEncoder.getPosition()).in(Units.Radians);
+        inputs.shooterBottomVelocityRpm = shooterBottomEncoder.getVelocity();
+        inputs.shooterBottomAppliedVolts = shooterBottomMotor.getAppliedOutput() * shooterBottomMotor.getBusVoltage();
+        inputs.shooterBottomSupplyCurrentAmps = shooterBottomMotor.getOutputCurrent();
+        inputs.shooterBottomTempCelcius = shooterBottomMotor.getMotorTemperature();
     }
 
     @Override
@@ -95,18 +95,15 @@ public class ShooterIOReal implements ShooterIO {
 
     @Override
     public void setShooterVoltage(double volts) {
-        shooterLeftMotor.setVoltage(volts);
-        shooterRightMotor.setVoltage(volts*0.6);
+        shooterTopMotor.setVoltage(volts);
+        shooterBottomMotor.setVoltage(volts * 0.6);
     }
 
     @Override
     public void setShooterVelocity(double rpm) {
-        // Set velocity for both motors
-        // Usually we control one and follower follows, but user asked for "independent
-        // controlled, but 2 as a group".
-        // Since we set them to same speed, we can just command both.
-        shooterLeftMotor.getClosedLoopController().setReference(rpm, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-        shooterRightMotor.getClosedLoopController().setReference(rpm*0.6, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+        shooterTopMotor.getClosedLoopController().setReference(rpm, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+        shooterBottomMotor.getClosedLoopController().setReference(rpm * 0.6, ControlType.kVelocity,
+                ClosedLoopSlot.kSlot0);
     }
 
     @Override
