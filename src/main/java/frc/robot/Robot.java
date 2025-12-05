@@ -89,7 +89,7 @@ public final class Robot extends LoggedRobot {
     CommandScheduler.getInstance()
         .onCommandFinish(command -> Logger.recordOutput("commands/" + command.getName(), false));
 
-    CameraServer.startAutomaticCapture();
+    // CameraServer.startAutomaticCapture();
 
     // Initialize drive subsystem
     switch (RobotType.MODE) {
@@ -129,6 +129,12 @@ public final class Robot extends LoggedRobot {
       });
     }
 
+    switch (RobotType.MODE) {
+      case REAL -> shooter = new Shooter(new ShooterIOReal());
+      // default -> shooter = new Shooter(new ShooterIO() {
+      // });
+    }
+
     alignmentState = new AlignmentState();
 
     // autos = new Autos(drive, alignmentState);
@@ -144,11 +150,11 @@ public final class Robot extends LoggedRobot {
     // left bumper will be used to toggle slow mode
     driverController.leftBumper().onTrue(drive.toggleSlowMode());
 
-    driverController.a().onTrue(shooter.shootHigh());
+    driverController.a().whileTrue(shooter.shootHigh());
 
-    driverController.b().onTrue(shooter.shootLow());
+    driverController.b().whileTrue(shooter.shootLow());
     
-    driverController.x().onTrue(funnel.runFunnel());
+    driverController.x().whileTrue(funnel.runFunnel());
 
     driverController
         .leftStick()

@@ -68,24 +68,21 @@ public class ShooterIOReal implements ShooterIO {
     public void updateInputs(ShooterIOInputs inputs) {
         // Loading
         inputs.loadingPositionRad = Units.Rotations.of(loadingEncoder.getPosition()).in(Units.Radians);
-        inputs.loadingVelocityRadPerSec = Units.RadiansPerSecond.of(loadingEncoder.getVelocity())
-                .in(Units.RadiansPerSecond);
+        inputs.loadingVelocityRpm = loadingEncoder.getVelocity();
         inputs.loadingAppliedVolts = loadingMotor.getAppliedOutput() * loadingMotor.getBusVoltage();
         inputs.loadingSupplyCurrentAmps = loadingMotor.getOutputCurrent();
         inputs.loadingTempCelcius = loadingMotor.getMotorTemperature();
 
         // Shooter Left
         inputs.shooterLeftPositionRad = Units.Rotations.of(shooterLeftEncoder.getPosition()).in(Units.Radians);
-        inputs.shooterLeftVelocityRadPerSec = Units.RadiansPerSecond.of(shooterLeftEncoder.getVelocity())
-                .in(Units.RadiansPerSecond);
+        inputs.shooterLeftVelocityRpm = shooterLeftEncoder.getVelocity();
         inputs.shooterLeftAppliedVolts = shooterLeftMotor.getAppliedOutput() * shooterLeftMotor.getBusVoltage();
         inputs.shooterLeftSupplyCurrentAmps = shooterLeftMotor.getOutputCurrent();
         inputs.shooterLeftTempCelcius = shooterLeftMotor.getMotorTemperature();
 
         // Shooter Right
         inputs.shooterRightPositionRad = Units.Rotations.of(shooterRightEncoder.getPosition()).in(Units.Radians);
-        inputs.shooterRightVelocityRadPerSec = Units.RadiansPerSecond.of(shooterRightEncoder.getVelocity())
-                .in(Units.RadiansPerSecond);
+        inputs.shooterRightVelocityRpm = shooterRightEncoder.getVelocity();
         inputs.shooterRightAppliedVolts = shooterRightMotor.getAppliedOutput() * shooterRightMotor.getBusVoltage();
         inputs.shooterRightSupplyCurrentAmps = shooterRightMotor.getOutputCurrent();
         inputs.shooterRightTempCelcius = shooterRightMotor.getMotorTemperature();
@@ -99,7 +96,7 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void setShooterVoltage(double volts) {
         shooterLeftMotor.setVoltage(volts);
-        shooterRightMotor.setVoltage(volts);
+        shooterRightMotor.setVoltage(volts*0.6);
     }
 
     @Override
@@ -109,7 +106,7 @@ public class ShooterIOReal implements ShooterIO {
         // controlled, but 2 as a group".
         // Since we set them to same speed, we can just command both.
         shooterLeftMotor.getClosedLoopController().setReference(rpm, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-        shooterRightMotor.getClosedLoopController().setReference(rpm, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+        shooterRightMotor.getClosedLoopController().setReference(rpm*0.6, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
     }
 
     @Override

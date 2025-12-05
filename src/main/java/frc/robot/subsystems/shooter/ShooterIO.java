@@ -7,21 +7,21 @@ public interface ShooterIO {
     public static class ShooterIOInputs {
         // Loading Motor (NEO)
         public double loadingPositionRad = 0.0;
-        public double loadingVelocityRadPerSec = 0.0;
+        public double loadingVelocityRpm = 0.0;
         public double loadingAppliedVolts = 0.0;
         public double loadingSupplyCurrentAmps = 0.0;
         public double loadingTempCelcius = 0.0;
 
         // Shooter Motor Left (Vortex)
         public double shooterLeftPositionRad = 0.0;
-        public double shooterLeftVelocityRadPerSec = 0.0;
+        public double shooterLeftVelocityRpm = 0.0;
         public double shooterLeftAppliedVolts = 0.0;
         public double shooterLeftSupplyCurrentAmps = 0.0;
         public double shooterLeftTempCelcius = 0.0;
 
         // Shooter Motor Right (Vortex)
         public double shooterRightPositionRad = 0.0;
-        public double shooterRightVelocityRadPerSec = 0.0;
+        public double shooterRightVelocityRpm = 0.0;
         public double shooterRightAppliedVolts = 0.0;
         public double shooterRightSupplyCurrentAmps = 0.0;
         public double shooterRightTempCelcius = 0.0;
