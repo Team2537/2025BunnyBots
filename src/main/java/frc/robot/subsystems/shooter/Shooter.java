@@ -56,8 +56,8 @@ public class Shooter extends SubsystemBase {
         double leftRpm = inputs.shooterLeftVelocityRpm;
         double rightRpm = inputs.shooterRightVelocityRpm;
 
-        return MathUtil.isNear(targetRpm, leftRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM) &&
-                MathUtil.isNear(targetRpm, rightRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM);
+        return MathUtil.isNear(targetRpm, topRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM) &&
+                MathUtil.isNear(targetRpm, bottomRpm, ShooterConstants.SHOOTER_TOLERANCE_RPM);
     }
 
     /**

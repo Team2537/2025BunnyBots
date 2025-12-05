@@ -17,12 +17,12 @@ import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOReal implements ShooterIO {
     private final SparkMax loadingMotor;
-    private final SparkFlex shooterLeftMotor;
-    private final SparkFlex shooterRightMotor;
+    private final SparkFlex shooterTopMotor;
+    private final SparkFlex shooterBottomMotor;
 
     private final RelativeEncoder loadingEncoder;
-    private final RelativeEncoder shooterLeftEncoder;
-    private final RelativeEncoder shooterRightEncoder;
+    private final RelativeEncoder shooterTopEncoder;
+    private final RelativeEncoder shooterBottomEncoder;
 
     public ShooterIOReal() {
         // Loading Motor (NEO)
@@ -37,11 +37,11 @@ public class ShooterIOReal implements ShooterIO {
         loadingMotor.configure(loadingConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Shooter Motors (Vortex)
-        shooterLeftMotor = new SparkFlex(ShooterConstants.SHOOTER_MOTOR_LEFT_ID, MotorType.kBrushless);
-        shooterLeftEncoder = shooterLeftMotor.getEncoder();
+        shooterTopMotor = new SparkFlex(ShooterConstants.SHOOTER_MOTOR_TOP_ID, MotorType.kBrushless);
+        shooterTopEncoder = shooterTopMotor.getEncoder();
 
-        shooterRightMotor = new SparkFlex(ShooterConstants.SHOOTER_MOTOR_RIGHT_ID, MotorType.kBrushless);
-        shooterRightEncoder = shooterRightMotor.getEncoder();
+        shooterBottomMotor = new SparkFlex(ShooterConstants.SHOOTER_MOTOR_BOTTOM_ID, MotorType.kBrushless);
+        shooterBottomEncoder = shooterBottomMotor.getEncoder();
 
         SparkFlexConfig shooterConfig = new SparkFlexConfig();
         shooterConfig.idleMode(IdleMode.kBrake);
@@ -55,13 +55,13 @@ public class ShooterIOReal implements ShooterIO {
                 ShooterConstants.SHOOTER_KFF,
                 ClosedLoopSlot.kSlot0);
 
-        // Apply Left Config
-        shooterConfig.inverted(ShooterConstants.SHOOTER_LEFT_INVERTED);
-        shooterLeftMotor.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // Apply Top Config
+        shooterConfig.inverted(ShooterConstants.SHOOTER_TOP_INVERTED);
+        shooterTopMotor.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Apply Right Config
-        shooterConfig.inverted(ShooterConstants.SHOOTER_RIGHT_INVERTED);
-        shooterRightMotor.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // Apply Bottom Config
+        shooterConfig.inverted(ShooterConstants.SHOOTER_BOTTOM_INVERTED);
+        shooterBottomMotor.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ShooterIOReal implements ShooterIO {
     @Override
     public void stop() {
         loadingMotor.stopMotor();
-        shooterLeftMotor.stopMotor();
-        shooterRightMotor.stopMotor();
+        shooterTopMotor.stopMotor();
+        shooterBottomMotor.stopMotor();
     }
 }

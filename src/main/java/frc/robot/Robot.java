@@ -26,8 +26,11 @@ import frc.robot.subsystems.drive.ModuleIOHybridFXS;
 import frc.robot.subsystems.funnel.Funnel;
 import frc.robot.subsystems.funnel.FunnelIO;
 import frc.robot.subsystems.funnel.FunnelIOReal;
+import frc.robot.subsystems.funnel.FunnelIOSim;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.generated.TunerConstants;
 import lib.controllers.CommandButtonBoard;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -125,6 +128,7 @@ public final class Robot extends LoggedRobot {
     // Initialize funnel subsystem
     switch (RobotType.MODE) {
       case REAL -> funnel = new Funnel(new FunnelIOReal());
+      case SIMULATION -> funnel = new Funnel(new FunnelIOSim());
       default -> funnel = new Funnel(new FunnelIO() {
       });
     }
@@ -137,15 +141,16 @@ public final class Robot extends LoggedRobot {
 
     alignmentState = new AlignmentState();
 
-    // autos = new Autos(drive, alignmentState);
+    autos = new Autos(drive, alignmentState, shooter, funnel);
 
     configureBindings();
   }
 
   private void configureBindings() {
+
     drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive, driverController::getLeftY, driverController::getLeftX, () -> -driverController.getRightX()));
+      DriveCommands.joystickDrive(
+          drive, driverController::getLeftY, driverController::getLeftX, () -> -driverController.getRightX()));
 
     // left bumper will be used to toggle slow mode
     driverController.leftBumper().onTrue(drive.toggleSlowMode());
