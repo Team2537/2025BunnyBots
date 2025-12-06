@@ -173,6 +173,9 @@ public final class Robot extends LoggedRobot {
     // x button runs the funnel belt at a constant speed
     driverController.x().whileTrue(funnel.runFunnel());
 
+    // y button runs the funnel and shooter in reverse
+    driverController.y().whileTrue(Commands.parallel(funnel.reverseFunnel(), shooter.reverse()));
+
     // pressing down the left stick will toggle field oriented driving and robot oriented driving, 
     //    ... the robot should begin in field oriented mode
     driverController

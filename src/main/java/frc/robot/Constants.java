@@ -13,6 +13,7 @@ public final class Constants {
     public static final int MOTOR_ID = 15;
     public static final boolean INVERTED = false;
     public static final Voltage FUNNEL_SPEED = Units.Volts.of(12.0);
+    public static final Voltage REVERSE_FUNNEL_SPEED = Units.Volts.of(-12.0);
     public static final Current CURRENT_LIMIT = Units.Amps.of(80.0);
 
     private FunnelConstants() {
@@ -38,9 +39,11 @@ public final class Constants {
 
     public static final double SHOOTER_SPEED_HIGH_RPM = 4500.0;
     public static final double SHOOTER_SPEED_LOW_RPM = 1500.0;
+    public static final double SHOOTER_SPEED_REVERSE = -1500.0;
     public static final double SHOOTER_TOLERANCE_RPM = 100.0;
 
     public static final double LOADER_SPEED_VOLTS = 10.0; // Or use percent/volts
+    public static final double LOADER_SPEED_REVERSE_VOLTS = -10.0;
 
     private ShooterConstants() {
     }

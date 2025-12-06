@@ -32,4 +32,10 @@ public class Funnel extends SubsystemBase {
                 () -> io.setVoltage(FunnelConstants.FUNNEL_SPEED.in(edu.wpi.first.units.Units.Volts)),
                 this::stop);
     }
+
+    public Command reverseFunnel() {
+        return startEnd(
+                () -> io.setVoltage(FunnelConstants.REVERSE_FUNNEL_SPEED.in(edu.wpi.first.units.Units.Volts)),
+                this::stop);
+    }
 }

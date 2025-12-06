@@ -75,11 +75,24 @@ public class Shooter extends SubsystemBase {
                 () -> stop());
     }
 
+    public Command _reverse() {
+        return this.runEnd(
+                () -> {
+                    runShooter(ShooterConstants.SHOOTER_SPEED_REVERSE);
+                    runLoader(ShooterConstants.LOADER_SPEED_REVERSE_VOLTS);
+                },
+                () -> stop());
+    }
+
     public Command shootHigh() {
         return shoot(ShooterConstants.SHOOTER_SPEED_HIGH_RPM);
     }
 
     public Command shootLow() {
         return shoot(ShooterConstants.SHOOTER_SPEED_LOW_RPM);
+    }
+
+    public Command reverse() {
+        return _reverse();
     }
 }
