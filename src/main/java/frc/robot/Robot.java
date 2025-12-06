@@ -148,28 +148,44 @@ public final class Robot extends LoggedRobot {
 
   private void configureBindings() {
 
+    // the default driving command is a joystick drive command, 
+    // which uses the left stick for linear velocity and the right stick for rotation velocity
+    // it is important to note that the robot has a very high acceleration so moving 
+    // the sticks aggressively may result in instability or mechanical damage, or risk to the field or field elements
+    // BE CAREFUL! Especially with the BunnyBots field!
     drive.setDefaultCommand(
       DriveCommands.joystickDrive(
           drive, driverController::getLeftY, driverController::getLeftX, () -> -driverController.getRightX()));
 
-    // left bumper will be used to toggle slow mode
+    // the left bumper can be used to toggle slow mode, which halves the maximum linear speed of the robot
+    // it does not affect rotation speed at the moment, this can be changed if desired
     driverController.leftBumper().onTrue(drive.toggleSlowMode());
 
+    // only the a or the b button should be pressed at a time
+    // the x button should be pressed simultaneously with the a or b button to shoot, 
+    //    ... but start pressing the x button first for ideal timing
+    // a button spins the shooter rollers at high speed (4500 RPM) for shooting in the top goal
     driverController.a().whileTrue(shooter.shootHigh());
 
+    // b button spins the shooter rollers at low speed (1500 RPM) for shooting in the low goal
     driverController.b().whileTrue(shooter.shootLow());
-    
+
+    // x button runs the funnel belt at a constant speed
     driverController.x().whileTrue(funnel.runFunnel());
 
+    // pressing down the left stick will toggle field oriented driving and robot oriented driving, 
+    //    ... the robot should begin in field oriented mode
     driverController
         .leftStick()
         .onTrue(DriveCommands.toggleFieldOriented(drive));
 
+    // pressing down on the d-pad will reset the odometry and heading to zero, it should be used rarely
+    //    ... for example if the robot is placed on the field with the wrong heading.
     driverController
         .povDown()
         .onTrue(DriveCommands.resetOdometryAndHeading(drive));
 
-    driverController.start().onTrue(DriveCommands.feedforwardCharacterization(drive));
+    // driverController.start().onTrue(DriveCommands.feedforwardCharacterization(drive));
   }
 
   @Override

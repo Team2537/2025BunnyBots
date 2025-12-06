@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -56,6 +57,8 @@ public final class Autos {
                 chooser.addDefaultOption("scoreHigh", scoreHighRoutine::build);
                 chooser.addOption("scoreLow", scoreLowRoutine::build);
                 chooser.addOption("exit", exitRoutine::build);
+
+                SmartDashboard.putData(chooser.getSendableChooser());
         }
 
         public Command getSelectedRoutine() {
