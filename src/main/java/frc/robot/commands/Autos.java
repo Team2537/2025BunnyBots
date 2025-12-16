@@ -30,6 +30,8 @@ public final class Autos {
         private final AutoRoutine exitRoutine;
         private final AutoRoutine scoreHighRoutine;
         private final AutoRoutine scoreLowRoutine;
+        private final AutoRoutine scoreHighExitRoutine;
+        private final AutoRoutine scoreLowExitRoutine;
 
         public Autos(Drive drive, AlignmentState alignmentState, Shooter shooter, Funnel funnel) {
                 this.drive = drive;
@@ -39,11 +41,15 @@ public final class Autos {
                 this.exitRoutine = new AutoRoutine(List.of(
                                 AutoAction.DRIVE_TO_OUT), drive, shooter, funnel);
                 this.scoreHighRoutine = new AutoRoutine(List.of(
-                                AutoAction.DRIVE_TO_COSMIC_CONVERTER,
+                                // AutoAction.DRIVE_TO_COSMIC_CONVERTER,
+                                AutoAction.SCORE_HIGH), drive, shooter, funnel);
+                this.scoreLowRoutine = new AutoRoutine(List.of(
+                                // AutoAction.DRIVE_TO_COSMIC_CONVERTER,
+                                AutoAction.SCORE_LOW), drive, shooter, funnel);
+                this.scoreHighExitRoutine=new AutoRoutine(List.of(
                                 AutoAction.SCORE_HIGH,
                                 AutoAction.DRIVE_TO_OUT), drive, shooter, funnel);
-                this.scoreLowRoutine = new AutoRoutine(List.of(
-                                AutoAction.DRIVE_TO_COSMIC_CONVERTER,
+                this.scoreLowExitRoutine=new AutoRoutine(List.of(
                                 AutoAction.SCORE_LOW,
                                 AutoAction.DRIVE_TO_OUT), drive, shooter, funnel);
                 this.idleRoutine = new AutoRoutine(List.of(), drive, shooter, funnel);
@@ -53,10 +59,12 @@ public final class Autos {
                 // chooser.addOption("scoreLow", scoreLowRoutine::build);
                 // chooser.addDefaultOption("exit", exitRoutine::build);
 
-                chooser.addOption("idle", idleRoutine::build);
-                chooser.addDefaultOption("scoreHigh", scoreHighRoutine::build);
+                chooser.addDefaultOption("idle", idleRoutine::build);
+                chooser.addOption("scoreHigh", scoreHighRoutine::build);
                 chooser.addOption("scoreLow", scoreLowRoutine::build);
                 chooser.addOption("exit", exitRoutine::build);
+                chooser.addOption("scoreHighExit",scoreHighExitRoutine::build);
+                chooser.addOption("scoreLowExit",scoreLowExitRoutine::build);
 
                 SmartDashboard.putData(chooser.getSendableChooser());
         }

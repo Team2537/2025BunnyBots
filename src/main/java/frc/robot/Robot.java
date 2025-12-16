@@ -68,6 +68,7 @@ public final class Robot extends LoggedRobot {
       case REAL -> {
         Logger.addDataReceiver(new NT4Publisher());
         Logger.addDataReceiver(new WPILOGWriter());
+        System.out.println("hello");
         new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
       }
       case SIMULATION -> {

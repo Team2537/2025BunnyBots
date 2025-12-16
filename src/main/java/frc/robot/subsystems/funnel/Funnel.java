@@ -23,10 +23,6 @@ public class Funnel extends SubsystemBase {
         io.stop();
     }
 
-    /**
-     * Returns a command that runs the funnel at a constant speed.
-     * Can be used with .toggleOnTrue() for toggle behavior.
-     */
     public Command runFunnel() {
         return startEnd(
                 () -> io.setVoltage(FunnelConstants.FUNNEL_SPEED.in(edu.wpi.first.units.Units.Volts)),
