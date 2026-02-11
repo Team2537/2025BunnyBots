@@ -199,7 +199,7 @@ public final class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    autos.getSelectedRoutine().schedule();
+    CommandScheduler.getInstance().schedule(autos.getSelectedRoutine());
   }
 
   @Override
