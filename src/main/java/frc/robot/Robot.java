@@ -190,6 +190,7 @@ public final class Robot extends LoggedRobot {
         .onTrue(DriveCommands.resetOdometryAndHeading(drive));
 
     // driverController.start().onTrue(DriveCommands.feedforwardCharacterization(drive));
+    driverController.start().onTrue(DriveCommands.wheelRadiusCharacterization(drive));
   }
 
   @Override
