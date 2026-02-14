@@ -29,8 +29,8 @@ public class DriveConstants {
                         DegreesPerSecondPerSecond.of(2500.0));
 
         public static final PathConstraints AUTO_LIMITS = new PathConstraints(
-                        MetersPerSecond.of(3.0),
-                        MetersPerSecondPerSecond.of(14.5),
+                        MetersPerSecond.of(2.0),
+                        MetersPerSecondPerSecond.of(3.0),
                         DegreesPerSecond.of(540.0),
                         DegreesPerSecondPerSecond.of(720.0));
 
