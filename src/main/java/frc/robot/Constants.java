@@ -21,8 +21,8 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int LOADING_MOTOR_ID = 31;
-    public static final int SHOOTER_MOTOR_TOP_ID = 22;
+    public static final int LOADING_MOTOR_ID = 22;
+    public static final int SHOOTER_MOTOR_TOP_ID = 31;
     public static final int SHOOTER_MOTOR_BOTTOM_ID = 23;
 
     public static final boolean LOADING_INVERTED = true;
