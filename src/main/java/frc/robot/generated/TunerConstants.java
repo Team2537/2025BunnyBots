@@ -64,7 +64,7 @@ public class TunerConstants {
                                                         // set a relatively low
                                                         // stator current limit to help avoid brownouts without
                                                         // impacting performance.
-                                                        .withStatorCurrentLimit(Amps.of(60))
+                                                        .withStatorCurrentLimit(Amps.of(100))
                                                         .withStatorCurrentLimitEnable(true));
         private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
         private static final Pigeon2Configuration pigeonConfigs = null;
@@ -77,7 +77,7 @@ public class TunerConstants {
         // This needs to be tuned to your individual robot
         public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.88);
 
-        public static final LinearVelocity kSpeedLimit = MetersPerSecond.of(2.0);
+        public static final LinearVelocity kSpeedLimit = MetersPerSecond.of(4.88);
 
         // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
         // This may need to be tuned to your individual robot

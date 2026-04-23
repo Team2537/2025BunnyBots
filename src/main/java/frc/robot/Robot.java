@@ -136,8 +136,8 @@ public final class Robot extends LoggedRobot {
 
     switch (RobotType.MODE) {
       case REAL -> shooter = new Shooter(new ShooterIOReal());
-      // default -> shooter = new Shooter(new ShooterIO() {
-      // });
+      default -> shooter = new Shooter(new ShooterIO() {
+      });
     }
 
     alignmentState = new AlignmentState();
